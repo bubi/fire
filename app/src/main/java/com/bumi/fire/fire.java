@@ -80,9 +80,8 @@ public class fire extends Activity {
                     mIntent.putExtra("app", "stopped");
                     startService(mIntent);
                 }
-                Log.v(tag, "selected Item Position " + i);
+                Log.v(tag, "selected Item Position: " + i);
             }
-
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
