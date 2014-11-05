@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/listFrame">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#A0000000">
+        <ImageView
+            android:layout_width="@dimen/appIcon_width"
+            android:layout_height="@dimen/appIcon_height"
+            android:id="@+id/gridImage"
+            android:scaleType="fitXY"
+            android:layout_margin="@dimen/list_margin"
+            android:layout_gravity="center_vertical" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/gridText"
+            android:paddingStart="@dimen/list_text_padding"
+            android:paddingEnd="@dimen/list_text_padding"
+            android:layout_gravity="center_horizontal|bottom"
+            android:textAlignment="gravity"
+            android:background="#B0000000"
+            android:textColor="#ffa6a6a6"
+            android:gravity="center|left" />
+        </LinearLayout>
+
+</FrameLayout>

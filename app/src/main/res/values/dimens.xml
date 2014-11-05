@@ -1,0 +1,11 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">5dp</dimen>
+    <dimen name="activity_vertical_margin">5dp</dimen>
+    <dimen name="appIcon_width">25dp</dimen>
+    <dimen name="appIcon_height">25dp</dimen>
+    <dimen name="textsize">32sp</dimen>
+    <dimen name="list_margin">5dp</dimen>
+    <dimen name="list_text_padding">5dp</dimen>
+    <dimen name="spinner_width">400dp</dimen>
+</resources>
