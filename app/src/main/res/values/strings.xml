@@ -5,4 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="welcome">fire! it up...</string>
 
+    <string name="LauncherPackage">com.amazon.tv.launcher.ui.HomeActivity</string>
+
 </resources>

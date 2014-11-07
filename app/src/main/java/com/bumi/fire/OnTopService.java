@@ -1,24 +1,49 @@
 package com.bumi.fire;
 
+import android.app.ActivityManager;
 import android.app.IntentService;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class OnTopService extends Service {
 
-    private PackageManager pm;
+    private final static String tag = "fire:OnTopService";
 
+    private PackageManager pm;
     private WindowManager windowManager;
     private ImageView logo;
+    private String mPackageName;
+    private String mForegroundTask;
+    private  Timer mTimer=new Timer();
 
-    private String mAppName;
+    TimerTask runner = new TimerTask() {
+        @Override
+        public void run() {
+            debugShowTask();
+            if (mForegroundTask.equals(getResources().getString(R.string.LauncherPackage))) {
+                Log.v(tag, "overriding MediaControl");
+                ((AudioManager) getSystemService(AUDIO_SERVICE)).registerMediaButtonEventReceiver(new ComponentName(getApplicationContext(), PlayReceiver.class));
+            } else {
+                Log.v(tag, "release MediaControl");
+                ((AudioManager) getSystemService(AUDIO_SERVICE)).unregisterMediaButtonEventReceiver(new ComponentName(getApplicationContext(), PlayReceiver.class));
+            }
+        }
+    };
+
 
     public OnTopService() {
 
@@ -47,18 +72,16 @@ public class OnTopService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int starterId){
-
-        String mTmp;
-        mTmp = intent.getStringExtra("app");
-        if(mTmp != null) {
-            if (mTmp.equals("stopped")) {
-                stopSelf();
-            } else {
-                startApp(intent.getStringExtra("app"));
-
-            }
-        }
+        mTimer.schedule(runner,100, 500);
         return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy(){
+        windowManager.removeViewImmediate(logo);
+        mTimer.cancel();
+        ((AudioManager)getSystemService(AUDIO_SERVICE)).unregisterMediaButtonEventReceiver(new ComponentName(getApplicationContext(),PlayReceiver.class));
+        stopSelf();
     }
 
     @Override
@@ -67,10 +90,13 @@ public class OnTopService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void startApp(String packageName){
-        pm = getPackageManager();
-        Intent intent = pm.getLaunchIntentForPackage(packageName);
-        if(intent != null) startActivity(intent);
+
+    private void debugShowTask(){
+        ActivityManager mAM = (ActivityManager)  this.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.RunningTaskInfo mTaskInfo;
+        mTaskInfo = mAM.getRunningTasks(1).get(0);
+        mForegroundTask = mTaskInfo.topActivity.getClassName();
+        Log.v(tag,"Foreground Packagename: " + mForegroundTask);
     }
 
 }

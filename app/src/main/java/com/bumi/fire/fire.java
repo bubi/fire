@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -35,6 +36,10 @@ public class fire extends Activity {
     private View mLastView;
     private List<ApplicationInfo> mApps;
     private ApplicationInfo mSelectedApp;
+
+    public static final String PREFS_NAME = "firePrefs";
+
+
     private static String[] mBlacklist = {  "Android System",
                                             "com.amazon.acos.providers.UnifiedSettingsProvider",
                                             "Amazon GameCircle",
@@ -71,14 +76,18 @@ public class fire extends Activity {
                 mAppListObj.setSelectedAppID(i);
                 mSelectedApp = mAppListObj.getSelectedApp(i);
                 if(mSelectedApp != null) {
-                    mIntent.removeExtra("app");
-                    mIntent.putExtra("app",mSelectedApp.packageName);
-                    startService(mIntent);
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
 
-                }else{
-                    mIntent.removeExtra("app");
-                    mIntent.putExtra("app", "stopped");
+                    editor.putString("app",mSelectedApp.packageName);
+                    editor.commit();
                     startService(mIntent);
+                }else{
+                    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("app","stopped");
+                    editor.commit();
+                    stopService(mIntent);
                 }
                 Log.v(tag, "selected Item Position: " + i);
             }
